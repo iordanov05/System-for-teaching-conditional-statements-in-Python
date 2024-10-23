@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Витя</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+    <div id="digit_school_logo">
+        <img src="/static/images/digit_school_logo.png" alt="ШЦТ" class="image-size" id="default-image">
+    </div>
+    <div class="container">
+        <!-- Контейнер для изображения -->
+        <div id="image-container">
+            <img src="/static/images/vitya.png" alt="Витя" class="image-size" id="default-image">
+        </div>
+
+        <!-- Меню для ввода кода -->
+        <div class="menu">
+            <div class="select-container">
+                <div>
+                <label for="season-select">Выберите время года:</label>
+                <select id="season-select">
+                    <option value="nothing"></option>
+                    <option value="winter">Зима</option>
+                    <option value="spring">Весна</option>
+                    <option value="summer">Лето</option>
+                    <option value="autumn">Осень</option>
+                </select>
+                </div>
+                <div>
+                <label for="activity-select">Выберите занятие:</label>
+                <select id="activity-select">
+                    <!-- Занятия будут добавляться динамически -->
+                </select>
+                </div>
+            </div>
+
+            <textarea id="code-input" rows="10" cols="30"></textarea>
+            <button id="run-code-button">Запустить код</button>
+        </div>
+    </div>
+
+    <!-- Подключение JavaScript-файла -->
+    <script src="/static/js/scripts.js"></script>
+</body>
+
+</html>

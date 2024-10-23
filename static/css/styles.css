@@ -1,0 +1,203 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
+    background-size: cover; /* Масштабирует изображение так, чтобы оно полностью покрывало экран, сохраняя пропорции */
+    background-repeat: no-repeat; /* Изображение фона не будет повторяться */
+    background-position: center center; /* Фон будет центрироваться на странице */
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+#digit_school_logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px; 
+}
+#digit_school_logo img {
+    max-width: 300px; /* Установите желаемую максимальную ширину */
+    max-height: 300px; /* Установите желаемую максимальную высоту */
+    width: auto; /* Сохраняет пропорции */
+    height: auto; /* Сохраняет пропорции */
+}
+
+textarea {
+    width: 100%;
+    height: 80%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 22px;
+    box-sizing: border-box;
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 0;
+    margin-right: 50px;
+}
+.menu{
+    margin-top: 30px;
+    width: 60%;
+}
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+pre {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#image-container {
+    margin-top: 100px;
+    position: relative;
+    width: 800px;
+    height: 800px;
+}
+
+#image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;  /* Подгонка изображений по размеру контейнера */
+    height: 100%;
+    object-fit: contain;
+}
+
+#image-container img.result-image {
+    z-index: 1;  /* Самый нижний слой */
+}
+
+#image-container img.layer-image {
+    z-index: 2;  /* Слои над результатом */
+}
+
+.select-container {
+    display: flex;
+    flex-direction: row; /* Изменение на горизонтальное выравнивание */
+    align-items: center; /* Вертикальное выравнивание по центру */
+    gap: 20px; /* Пространство между элементами */
+    padding: 15px;
+    background-color: #f9f9f9; /* Светлый фон контейнера */
+    border-radius: 10px; /* Скругленные углы контейнера */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Мягкая тень для глубины */
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+.select-container label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333; /* Темный цвет текста */
+    margin-right: 10px; /* Отступ справа от метки */
+}
+
+.select-container select {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px; /* Скругленные углы для выпадающего списка */
+    border: 1px solid #ccc; /* Светлая рамка */
+    background-color: #fff; /* Белый фон */
+    color: #333; /* Цвет текста */
+    transition: border-color 0.3s; /* Плавный переход для рамки */
+}
+
+.select-container select:focus {
+    border-color: #4CAF50; /* Цвет рамки при фокусе */
+    outline: none; /* Убираем стандартное обрамление */
+}
+.select-container {
+    display: flex;
+    flex-direction: row; /* Изменение на горизонтальное выравнивание */
+    align-items: center; /* Вертикальное выравнивание по центру */
+    justify-content: center;
+    gap: 35px; /* Пространство между элементами */
+    padding: 15px;
+    background-color: #f9f9f9; /* Светлый фон контейнера */
+    border-radius: 10px; /* Скругленные углы контейнера */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Мягкая тень для глубины */
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+.select-container label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333; /* Темный цвет текста */
+    margin-right: 10px; /* Отступ справа от метки */
+}
+
+.select-container select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px; /* Скругленные углы для выпадающего списка */
+    border: 1px solid #ccc; /* Светлая рамка */
+    background-color: #fff; /* Белый фон */
+    color: #333; /* Цвет текста */
+    transition: border-color 0.3s; /* Плавный переход для рамки */
+}
+
+.select-container select:focus {
+    border-color: #4CAF50; /* Цвет рамки при фокусе */
+    outline: none; /* Убираем стандартное обрамление */
+}
+
+textarea#code-input {
+    width: 100%;
+    padding: 15px;
+    font-family: monospace;
+    font-size: 22px;
+    color: #333; /* Темный цвет текста */
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Скругленные углы */
+    background-color: #fff; /* Белый фон */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Внутренняя тень */
+    resize: vertical; /* Ограничение изменения размера только по вертикали */
+    /* margin-bottom: 20px;  */
+    transition: border-color 0.3s;
+}
+
+textarea#code-input:focus {
+    border-color: #4CAF50; /* Цвет рамки при фокусе */
+    outline: none; /* Убираем стандартное обрамление */
+}
+
+button#run-code-button {
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #4CAF50; /* Зеленый цвет кнопки */
+    border: none;
+    border-radius: 5px; /* Скругленные углы */
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Мягкая тень для кнопки */
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button#run-code-button:hover {
+    background-color: #45a049; /* Более темный зеленый цвет при наведении */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Более глубокая тень при наведении */
+}
+
+button#run-code-button:active {
+    background-color: #3e8e41; /* Еще более темный зеленый цвет при нажатии */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Слабая тень при нажатии */
+    transform: translateY(2px); /* Сдвиг вниз для имитации нажатия */
+}
