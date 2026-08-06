@@ -67,7 +67,7 @@ pre {
 }
 
 #image-container {
-    margin-top: 100px;
+    margin-top: 8vh; /* было 100px — фикс. значение теряется на больших экранах, поэтому задаём отступ в процентах от высоты окна */
     position: relative;
     width: 800px;
     height: 800px;
