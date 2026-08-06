@@ -297,18 +297,32 @@ document.addEventListener('DOMContentLoaded', function () {
         testStatus.innerHTML = '';
 
         const failures = [];
+        let networkError = null;
 
-        for (const scenario of testScenarios) {
-            testStatus.textContent = `Проверяю: ${scenario.label}...`;
-            const outcome = await runTestCase(code, scenario.season, scenario.activity);
-            if (!outcome.success) {
-                failures.push({ label: scenario.label, error: outcome.errorMessage });
+        try {
+            for (const scenario of testScenarios) {
+                testStatus.textContent = `Проверяю: ${scenario.label}...`;
+                const outcome = await runTestCase(code, scenario.season, scenario.activity);
+                if (!outcome.success) {
+                    failures.push({ label: scenario.label, error: outcome.errorMessage });
+                }
             }
+        } catch (error) {
+            networkError = error;
+            console.error('Ошибка при проверке:', error);
+        } finally {
+            runButton.disabled = false;
+            testButton.disabled = false;
+            testStatus.innerHTML = '';
         }
 
-        runButton.disabled = false;
-        testButton.disabled = false;
-        testStatus.innerHTML = '';
+        if (networkError) {
+            const errorBox = document.createElement('div');
+            errorBox.id = 'test-errors';
+            errorBox.textContent = 'Не удалось связаться с сервером. Проверь подключение и попробуй снова.';
+            testStatus.appendChild(errorBox);
+            return;
+        }
 
         if (failures.length === 0) {
             launchConfetti();
