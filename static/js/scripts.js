@@ -104,6 +104,26 @@ document.addEventListener('DOMContentLoaded', function () {
         ]
     };
 
+    const seasonLabels = {
+        winter: 'Зима',
+        spring: 'Весна',
+        summer: 'Лето',
+        autumn: 'Осень'
+    };
+
+    // Полный список сценариев (сезон + занятие) для кнопки "Проверить всё"
+    const testScenarios = [];
+    Object.keys(activities).forEach(season => {
+        activities[season].forEach(activity => {
+            const activityLabel = activity.value === 'nothing' ? 'просто погулять' : activity.text;
+            testScenarios.push({
+                season: season,
+                activity: activity.value,
+                label: `${seasonLabels[season]} — ${activityLabel}`
+            });
+        });
+    });
+
     function updateActivities(season) {
         activitySelect.innerHTML = '';
         if (activities[season]) {
@@ -185,6 +205,134 @@ document.addEventListener('DOMContentLoaded', function () {
 
         })
         .catch(error => console.error('Ошибка:', error));
+    });
+
+    async function runTestCase(code, season, activity) {
+        const response = await fetch('/run', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ code: code, season: season, activity: activity })
+        });
+        const result = await response.json();
+        return {
+            success: result.image === 'correct.png',
+            errorMessage: result.image ? null : result.result
+        };
+    }
+
+    function showSuccessOverlay() {
+        const overlay = document.getElementById('success-overlay');
+        overlay.classList.add('visible');
+        setTimeout(() => overlay.classList.remove('visible'), 4000);
+    }
+
+    document.getElementById('success-overlay').addEventListener('click', function () {
+        this.classList.remove('visible');
+    });
+
+    function launchConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const ctx = canvas.getContext('2d');
+        const colors = ['#4CAF50', '#FFC107', '#2196F3', '#E91E63', '#FF5722', '#9C27B0'];
+        const pieces = [];
+        const pieceCount = 150;
+
+        for (let i = 0; i < pieceCount; i++) {
+            pieces.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * -canvas.height,
+                size: 6 + Math.random() * 6,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                speedY: 2 + Math.random() * 3,
+                speedX: -2 + Math.random() * 4,
+                rotation: Math.random() * 360,
+                rotationSpeed: -6 + Math.random() * 12
+            });
+        }
+
+        const duration = 4000;
+        const startTime = performance.now();
+
+        function frame(now) {
+            const elapsed = now - startTime;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pieces.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+            });
+            if (elapsed < duration) {
+                requestAnimationFrame(frame);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        requestAnimationFrame(frame);
+    }
+
+    document.getElementById('test-code-button').addEventListener('click', async function () {
+        if (!codeEditor) return;
+
+        const code = codeEditor.getValue();
+        const runButton = document.getElementById('run-code-button');
+        const testButton = document.getElementById('test-code-button');
+        const testStatus = document.getElementById('test-status');
+
+        runButton.disabled = true;
+        testButton.disabled = true;
+        testStatus.innerHTML = '';
+
+        const failures = [];
+
+        for (const scenario of testScenarios) {
+            testStatus.textContent = `Проверяю: ${scenario.label}...`;
+            const outcome = await runTestCase(code, scenario.season, scenario.activity);
+            if (!outcome.success) {
+                failures.push({ label: scenario.label, error: outcome.errorMessage });
+            }
+        }
+
+        runButton.disabled = false;
+        testButton.disabled = false;
+        testStatus.innerHTML = '';
+
+        if (failures.length === 0) {
+            launchConfetti();
+            showSuccessOverlay();
+        } else {
+            const errorBox = document.createElement('div');
+            errorBox.id = 'test-errors';
+
+            const title = document.createElement('strong');
+            title.textContent = 'Не всё получилось, но ты почти у цели! Проверь эти случаи:';
+            errorBox.appendChild(title);
+
+            const list = document.createElement('ul');
+            failures.forEach(f => {
+                const li = document.createElement('li');
+                li.textContent = f.error
+                    ? `${f.label} — ошибка в коде: ${f.error}`
+                    : `${f.label} — Витя одет неправильно`;
+                list.appendChild(li);
+            });
+            errorBox.appendChild(list);
+
+            testStatus.appendChild(errorBox);
+        }
     });
 
     const initialSeason = seasonSelect.value || 'nothing'; // Устанавливаем значение по умолчанию

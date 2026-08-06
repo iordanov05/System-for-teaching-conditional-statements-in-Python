@@ -40,8 +40,17 @@
             </div>
 
             <div id="code-input-container"></div>
-            <button id="run-code-button">Запустить код</button>
+            <div class="button-row">
+                <button id="run-code-button">Запустить код</button>
+                <button id="test-code-button">Проверить всё</button>
+            </div>
+            <div id="test-status"></div>
         </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+    <div id="success-overlay">
+        <div id="success-message">🎉 Вы большие молодцы! 🎉</div>
     </div>
 
     <!-- Подключение редактора кода Monaco (тот же движок, что в VS Code) -->
