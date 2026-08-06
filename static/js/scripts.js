@@ -2,6 +2,76 @@ document.addEventListener('DOMContentLoaded', function () {
     const seasonSelect = document.getElementById('season-select');
     const activitySelect = document.getElementById('activity-select');
 
+    // Инициализация редактора кода Monaco (тот же движок, что и в VS Code)
+    let codeEditor;
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' } });
+    require(['vs/editor/editor.main'], function () {
+        // Список функций-команд, доступных ребёнку, с подсказками на русском
+        const availableFunctions = [
+            { name: 'take_skis', doc: 'Взять лыжи' },
+            { name: 'take_ball', doc: 'Взять мяч' },
+            { name: 'wear_winter_suit', doc: 'Надеть тёплую куртку' },
+            { name: 'wear_raincoat_suit', doc: 'Надеть непромокаемый костюм' },
+            { name: 'wear_school_suit', doc: 'Надеть школьную форму' },
+            { name: 'wear_swimming_suit', doc: 'Надеть купальный костюм' },
+            { name: 'wear_football_suit', doc: 'Надеть футбольную форму' },
+            { name: 'take_swimming_equipment', doc: 'Взять снаряжение для плавания' },
+            { name: 'take_skates', doc: 'Взять коньки' },
+            { name: 'take_umbrella', doc: 'Взять зонт' },
+            { name: 'take_boat', doc: 'Взять кораблик' },
+            { name: 'take_fishing_rod', doc: 'Взять удочку' },
+            { name: 'take_backpack', doc: 'Взять рюкзак' }
+        ];
+
+        monaco.languages.registerCompletionItemProvider('python', {
+            provideCompletionItems: function (model, position) {
+                const word = model.getWordUntilPosition(position);
+                const range = {
+                    startLineNumber: position.lineNumber,
+                    endLineNumber: position.lineNumber,
+                    startColumn: word.startColumn,
+                    endColumn: word.endColumn
+                };
+                return {
+                    suggestions: availableFunctions.map(function (fn) {
+                        return {
+                            label: fn.name,
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            insertText: fn.name + '()',
+                            detail: fn.doc,
+                            documentation: fn.doc,
+                            range: range
+                        };
+                    })
+                };
+            }
+        });
+
+        monaco.editor.defineTheme('warm-light', {
+            base: 'vs',
+            inherit: true,
+            rules: [],
+            colors: {
+                'editor.background': '#FBF6EC',
+                'editor.lineHighlightBackground': '#F3EADA',
+                'editorLineNumber.foreground': '#B8A98C',
+                'editorLineNumber.activeForeground': '#4CAF50',
+                'editorCursor.foreground': '#4CAF50',
+                'editorIndentGuide.background': '#E8DEC8',
+                'editor.selectionBackground': '#D9EAD3'
+            }
+        });
+        codeEditor = monaco.editor.create(document.getElementById('code-input-container'), {
+            value: '',
+            language: 'python',
+            theme: 'warm-light',
+            fontSize: 20,
+            minimap: { enabled: false },
+            automaticLayout: true,
+            scrollBeyondLastLine: false
+        });
+    });
+
     // Объект с фоновыми изображениями для каждого сезона
     const backgroundImages = {
         nothing: '/static/images/home_bg.png',
@@ -59,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('run-code-button').addEventListener('click', function () {
-        const codeInput = document.getElementById('code-input').value;
+        const codeInput = codeEditor ? codeEditor.getValue() : '';
         const season = seasonSelect.value;
         const activity = activitySelect.value;
 
