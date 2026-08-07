@@ -16,7 +16,7 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
-    margin: 10px; 
+    margin: 10px;
 }
 #digit_school_logo img {
     max-width: 300px; /* Установите желаемую максимальную ширину */
@@ -67,7 +67,7 @@ pre {
 }
 
 #image-container {
-    margin-top: 100px;
+    margin-top: 8vh; /* было 100px — фикс. значение теряется на больших экранах, поэтому задаём отступ в процентах от высоты окна */
     position: relative;
     width: 800px;
     height: 800px;
@@ -158,24 +158,20 @@ pre {
     outline: none; /* Убираем стандартное обрамление */
 }
 
-textarea#code-input {
+#code-input-container {
     width: 100%;
-    padding: 15px;
-    font-family: monospace;
-    font-size: 22px;
-    color: #333; /* Темный цвет текста */
+    height: 65vh;
+    margin-top: 10px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px; /* Скругленные углы */
-    background-color: #fff; /* Белый фон */
+    overflow: hidden; /* Скругление углов применяется и к внутреннему редактору */
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Внутренняя тень */
-    resize: vertical; /* Ограничение изменения размера только по вертикали */
-    /* margin-bottom: 20px;  */
     transition: border-color 0.3s;
 }
 
-textarea#code-input:focus {
+#code-input-container:focus-within {
     border-color: #4CAF50; /* Цвет рамки при фокусе */
-    outline: none; /* Убираем стандартное обрамление */
 }
 
 button#run-code-button {
@@ -200,4 +196,114 @@ button#run-code-button:active {
     background-color: #3e8e41; /* Еще более темный зеленый цвет при нажатии */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Слабая тень при нажатии */
     transform: translateY(2px); /* Сдвиг вниз для имитации нажатия */
+}
+
+.button-row {
+    display: flex;
+    gap: 15px;
+}
+
+button#test-code-button {
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #2196F3; /* Синий цвет кнопки, отличный от "Запустить" */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button#test-code-button:hover {
+    background-color: #1976D2;
+}
+
+button#test-code-button:active {
+    background-color: #145a9e;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(2px);
+}
+
+button#test-code-button:disabled,
+button#run-code-button:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+#test-status {
+    margin-top: 15px;
+    font-size: 16px;
+    color: #333;
+}
+
+#test-errors {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #FDECEA;
+    border: 1px solid #F5C6CB;
+    border-radius: 5px;
+    color: #611A15;
+}
+
+#test-errors ul {
+    margin: 8px 0 0 20px;
+    padding: 0;
+}
+
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+#success-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+#success-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#success-message {
+    font-size: 48px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4CAF50;
+    padding: 40px 60px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: pop-in 0.5s ease;
+}
+
+@keyframes pop-in {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }

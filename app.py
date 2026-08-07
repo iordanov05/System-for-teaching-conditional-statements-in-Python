@@ -10,8 +10,8 @@ expected_ids = {
         'skating': ['skates', 'warm_jacket']
     },
     'summer': {
-        'nothing': ['football_suit'],
-        'swimming': ['swimming_suit', 'swimming_equipment'], 
+        'nothing': [],
+        'swimming': ['swimming_suit', 'swimming_equipment'],
         'football': ['football_suit','ball']
     },
     'spring': {
@@ -20,7 +20,7 @@ expected_ids = {
         'go_fishing': ['raincoat_suit','fishing_rod']
     },
     'autumn': {
-        'nothing': ['raincoat_suit'],
+        'nothing': [],
         'walk_in_the_rain': ['raincoat_suit', 'umbrella'],
         'go_to_school': ['school_suit', 'backpack']
     }
