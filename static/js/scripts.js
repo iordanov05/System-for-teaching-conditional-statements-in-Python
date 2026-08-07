@@ -165,13 +165,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const imageContainer = document.getElementById('image-container');
             imageContainer.innerHTML = '';
 
-            if (result.image) {
-                const checkImage = document.createElement('img');
-                checkImage.src = `/static/${result.image}`;
-                checkImage.alt = 'Результат проверки';
-                checkImage.className = 'image-size result-image';
-                imageContainer.appendChild(checkImage);
-            }
+            const checkImage = document.createElement('img');
+            checkImage.src = result.image ? `/static/${result.image}` : '/static/images/vitya.png';
+            checkImage.alt = result.image ? 'Результат проверки' : 'Витя';
+            checkImage.className = 'image-size result-image';
+            imageContainer.appendChild(checkImage);
 
             if (result.command) {
                 const images = {

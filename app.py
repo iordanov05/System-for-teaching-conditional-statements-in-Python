@@ -103,7 +103,7 @@ def run_code():
             result_image = 'sad_vitya.png'
             
     except Exception as e:
-        return jsonify({'result': str(e), 'command': []})
+        return jsonify({'result': str(e), 'command': [], 'image': 'sad_vitya.png'})
 
     return jsonify({'result': "Код выполнен", 'command': flat_command_list, 'image': result_image})
 
