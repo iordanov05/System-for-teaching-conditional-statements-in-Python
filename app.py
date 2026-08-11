@@ -108,4 +108,4 @@ def run_code():
     return jsonify({'result': "Код выполнен", 'command': flat_command_list, 'image': result_image})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
