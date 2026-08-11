@@ -23,6 +23,23 @@ document.addEventListener('DOMContentLoaded', function () {
             { name: 'take_backpack', doc: 'Взять рюкзак' }
         ];
 
+        // Значения season/activity, которые сравниваются в if/elif, с подсказками на русском
+        const availableValues = [
+            { value: 'winter', doc: 'Время года: зима' },
+            { value: 'spring', doc: 'Время года: весна' },
+            { value: 'summer', doc: 'Время года: лето' },
+            { value: 'autumn', doc: 'Время года: осень' },
+            { value: 'nothing', doc: 'Занятие: просто погулять, без особого занятия' },
+            { value: 'skiing', doc: 'Занятие: покататься на лыжах (зима)' },
+            { value: 'skating', doc: 'Занятие: покататься на коньках (зима)' },
+            { value: 'launch_paper_boats', doc: 'Занятие: запускать бумажные кораблики (весна)' },
+            { value: 'go_fishing', doc: 'Занятие: пойти на рыбалку (весна)' },
+            { value: 'swimming', doc: 'Занятие: плавать в речке (лето)' },
+            { value: 'football', doc: 'Занятие: играть в футбол (лето)' },
+            { value: 'walk_in_the_rain', doc: 'Занятие: гулять под дождём (осень)' },
+            { value: 'go_to_school', doc: 'Занятие: пойти в школу (осень)' }
+        ];
+
         monaco.languages.registerCompletionItemProvider('python', {
             provideCompletionItems: function (model, position) {
                 const word = model.getWordUntilPosition(position);
@@ -32,17 +49,28 @@ document.addEventListener('DOMContentLoaded', function () {
                     startColumn: word.startColumn,
                     endColumn: word.endColumn
                 };
+                const functionSuggestions = availableFunctions.map(function (fn) {
+                    return {
+                        label: fn.name,
+                        kind: monaco.languages.CompletionItemKind.Function,
+                        insertText: fn.name + '()',
+                        detail: fn.doc,
+                        documentation: fn.doc,
+                        range: range
+                    };
+                });
+                const valueSuggestions = availableValues.map(function (item) {
+                    return {
+                        label: item.value,
+                        kind: monaco.languages.CompletionItemKind.Value,
+                        insertText: "'" + item.value + "'",
+                        detail: item.doc,
+                        documentation: item.doc,
+                        range: range
+                    };
+                });
                 return {
-                    suggestions: availableFunctions.map(function (fn) {
-                        return {
-                            label: fn.name,
-                            kind: monaco.languages.CompletionItemKind.Function,
-                            insertText: fn.name + '()',
-                            detail: fn.doc,
-                            documentation: fn.doc,
-                            range: range
-                        };
-                    })
+                    suggestions: functionSuggestions.concat(valueSuggestions)
                 };
             }
         });
