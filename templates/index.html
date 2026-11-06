@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 
-<body>
+<body data-school="{{ school_key }}" data-mode="{{ mode }}">
     <div id="digit_school_logo">
-        <img src="/static/images/digit_school_logo.png" alt="ШЦТ" class="image-size" id="default-image">
+        <img src="{{ url_for('static', filename=school.logo) }}" alt="{{ school.name }}" class="image-size school-logo">
     </div>
     <div class="container">
         <!-- Контейнер для изображения -->
@@ -20,6 +20,10 @@
 
         <!-- Меню для ввода кода -->
         <div class="menu">
+            <div class="mode-switch" role="group" aria-label="Режим платформы">
+                <button type="button" class="mode-button" data-mode="full">Сезон + занятие</button>
+                <button type="button" class="mode-button" data-mode="seasons">Только сезоны</button>
+            </div>
             <div class="select-container">
                 <div>
                 <label for="season-select">Выберите время года:</label>
@@ -31,7 +35,7 @@
                     <option value="autumn">Осень</option>
                 </select>
                 </div>
-                <div>
+                <div id="activity-field">
                 <label for="activity-select">Выберите занятие:</label>
                 <select id="activity-select">
                     <!-- Занятия будут добавляться динамически -->

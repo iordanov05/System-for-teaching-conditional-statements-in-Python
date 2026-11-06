@@ -19,6 +19,10 @@ def wear_swimming_suit():
 def wear_football_suit():
     return["football_suit"]
 
+def wear_summer_suit():
+    # Летняя одежда для упрощённой версии (только сезоны): футболка и шорты
+    return["football_suit"]
+
 def take_swimming_equipment():
     return["swimming_equipment"]
 
