@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
     const seasonSelect = document.getElementById('season-select');
     const activitySelect = document.getElementById('activity-select');
+    const activityField = document.getElementById('activity-field');
+
+    // Режим платформы: 'full' — сезон + занятие, 'seasons' — только сезоны (упрощённая версия)
+    let currentMode = document.body.dataset.mode === 'seasons' ? 'seasons' : 'full';
+
+    // Команды, которые нужны в упрощённой версии (по одной на каждый сезон)
+    const seasonsModeFunctions = ['wear_winter_suit', 'wear_raincoat_suit', 'wear_summer_suit', 'wear_school_suit'];
 
     // Инициализация редактора кода Monaco (тот же движок, что и в VS Code)
     let codeEditor;
@@ -15,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             { name: 'wear_school_suit', doc: 'Надеть школьную форму' },
             { name: 'wear_swimming_suit', doc: 'Надеть купальный костюм' },
             { name: 'wear_football_suit', doc: 'Надеть футбольную форму' },
+            { name: 'wear_summer_suit', doc: 'Надеть летнюю одежду: футболку и шорты' },
             { name: 'take_swimming_equipment', doc: 'Взять снаряжение для плавания' },
             { name: 'take_skates', doc: 'Взять коньки' },
             { name: 'take_umbrella', doc: 'Взять зонт' },
@@ -49,7 +57,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     startColumn: word.startColumn,
                     endColumn: word.endColumn
                 };
-                const functionSuggestions = availableFunctions.map(function (fn) {
+                const isSeasonsMode = currentMode === 'seasons';
+                const visibleFunctions = availableFunctions.filter(function (fn) {
+                    return !isSeasonsMode || seasonsModeFunctions.includes(fn.name);
+                });
+                const visibleValues = availableValues.filter(function (item) {
+                    return !isSeasonsMode || item.doc.startsWith('Время года');
+                });
+                const functionSuggestions = visibleFunctions.map(function (fn) {
                     return {
                         label: fn.name,
                         kind: monaco.languages.CompletionItemKind.Function,
@@ -59,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         range: range
                     };
                 });
-                const valueSuggestions = availableValues.map(function (item) {
+                const valueSuggestions = visibleValues.map(function (item) {
                     return {
                         label: item.value,
                         kind: monaco.languages.CompletionItemKind.Value,
@@ -139,21 +154,34 @@ document.addEventListener('DOMContentLoaded', function () {
         autumn: 'Осень'
     };
 
-    // Полный список сценариев (сезон + занятие) для кнопки "Проверить всё"
-    const testScenarios = [];
-    Object.keys(activities).forEach(season => {
-        activities[season].forEach(activity => {
-            const activityLabel = activity.value === 'nothing' ? 'просто погулять' : activity.text;
-            testScenarios.push({
-                season: season,
-                activity: activity.value,
-                label: `${seasonLabels[season]} — ${activityLabel}`
+    // Список сценариев для кнопки "Проверить всё" — зависит от режима
+    function buildTestScenarios() {
+        const scenarios = [];
+        Object.keys(activities).forEach(season => {
+            if (currentMode === 'seasons') {
+                scenarios.push({ season: season, activity: 'nothing', label: seasonLabels[season] });
+                return;
+            }
+            activities[season].forEach(activity => {
+                const activityLabel = activity.value === 'nothing' ? 'просто погулять' : activity.text;
+                scenarios.push({
+                    season: season,
+                    activity: activity.value,
+                    label: `${seasonLabels[season]} — ${activityLabel}`
+                });
             });
         });
-    });
+        return scenarios;
+    }
 
     function updateActivities(season) {
         activitySelect.innerHTML = '';
+        if (currentMode === 'seasons') {
+            const option = document.createElement('option');
+            option.value = 'nothing';
+            activitySelect.appendChild(option);
+            return;
+        }
         if (activities[season]) {
             activities[season].forEach(activity => {
                 const option = document.createElement('option');
@@ -186,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ code: codeInput, season: season, activity: activity })
+            body: JSON.stringify({ code: codeInput, season: season, activity: activity, mode: currentMode })
         })
         .then(response => response.json())
         .then(result => {
@@ -239,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ code: code, season: season, activity: activity })
+            body: JSON.stringify({ code: code, season: season, activity: activity, mode: currentMode })
         });
         const result = await response.json();
         return {
@@ -326,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let networkError = null;
 
         try {
-            for (const scenario of testScenarios) {
+            for (const scenario of buildTestScenarios()) {
                 testStatus.textContent = `Проверяю: ${scenario.label}...`;
                 const outcome = await runTestCase(code, scenario.season, scenario.activity);
                 if (!outcome.success) {
@@ -375,8 +403,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    function applyMode(mode) {
+        currentMode = mode;
+        document.body.dataset.mode = mode;
+        activityField.hidden = mode === 'seasons';
+        document.querySelectorAll('.mode-button').forEach(button => {
+            const isActive = button.dataset.mode === mode;
+            button.classList.toggle('active', isActive);
+            button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+        updateActivities(seasonSelect.value);
+        document.getElementById('test-status').innerHTML = '';
+
+        // Запоминаем режим в адресе страницы, чтобы он сохранялся при перезагрузке
+        const url = new URL(window.location.href);
+        url.searchParams.set('mode', mode);
+        window.history.replaceState(null, '', url);
+    }
+
+    document.querySelectorAll('.mode-button').forEach(button => {
+        button.addEventListener('click', () => applyMode(button.dataset.mode));
+    });
+
     const initialSeason = seasonSelect.value || 'nothing'; // Устанавливаем значение по умолчанию
-    updateActivities(initialSeason);
+    applyMode(currentMode);
     updateBackgroundImage(initialSeason);
 
 

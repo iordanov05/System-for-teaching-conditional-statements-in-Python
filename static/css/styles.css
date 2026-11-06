@@ -310,3 +310,55 @@ button#run-code-button:disabled {
         opacity: 1;
     }
 }
+
+/* Переключатель режима: «Сезон + занятие» / «Только сезоны» */
+.mode-switch {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 12px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mode-switch .mode-button {
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    background-color: transparent;
+    border-radius: 7px;
+    box-shadow: none;
+}
+
+.mode-switch .mode-button:hover {
+    background-color: #eef6ee;
+}
+
+.mode-switch .mode-button.active {
+    color: #fff;
+    background-color: #4CAF50;
+}
+
+/* Оформление для школы «Мастерсам» (цвета с mastersam.org) */
+body[data-school="mastersam"] #digit_school_logo img {
+    max-width: 240px;
+    padding: 10px 14px;
+    background-color: rgba(255, 249, 241, 0.92);
+    border-radius: 12px;
+}
+
+body[data-school="mastersam"] .mode-switch .mode-button:hover {
+    background-color: #fff0d9;
+}
+
+body[data-school="mastersam"] .mode-switch .mode-button.active,
+body[data-school="mastersam"] #success-message {
+    background-color: #ff8a00;
+}
+
+body[data-school="mastersam"] .select-container select:focus,
+body[data-school="mastersam"] #code-input-container:focus-within {
+    border-color: #ff8a00;
+}
